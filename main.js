@@ -19,7 +19,7 @@ const getHourlyForecast = async ({ name: city }) => {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`);
     const data = await response.json();
     return data.list.map(forecast => {
-        const { main: { temp, temp_max, temp_127 }, dt, dt_txt, weather: [{ description, icon }] } = forecast;
+        const { main: { temp, temp_max, temp_min }, dt, dt_txt, weather: [{ description, icon }] } = forecast;
         return { temp, temp_max, temp_min, dt, dt_txt, description, icon }
     })
 }
@@ -106,11 +106,13 @@ const loadFiveDayForecast = (hourlyForecast) => {
 const loadFeelsLike = ({ main: { feels_like } }) => {
     let container = document.querySelector("#feels-like");
     container.querySelector(".feels-like-temp").textContent = formatTemperature(feels_like);
+    console.log(feels_like);
 
 }
 const loadHumidity = ({ main: { humidity } }) => {
     let container = document.querySelector("#humidity");
     container.querySelector(".humidity-value").textContent = `${humidity}%`;
+    console.log(humidity);
 
 }
 
@@ -176,7 +178,7 @@ const debounceSearch = debounce((event) => onSearchChange(event))
 
 
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     loadForecastUsingGeoLocation();
     const searchInput = document.querySelector("#search");
     searchInput.addEventListener("input", debounceSearch);
